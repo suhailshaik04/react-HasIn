@@ -1,0 +1,34 @@
+.sidebar {
+  display: flex;
+}
+
+.drawer {
+  width: 240px;
+  margin-top: 64px;
+  z-index: 0;
+}
+
+.drawerPaper {
+  width: 240px;
+}
+
+.drawerContainer {
+  overflow-y: auto;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding: 16px;
+}
+
+.button {
+  background-color: #2196f3;
+  color: white;
+}
+
+.content {
+  margin-left: 240px;
+  padding: 16px;
+}
