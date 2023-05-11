@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { List, ListItem, ListItemIcon, ListItemText, Drawer, AppBar, Toolbar, Typography, IconButton } from "@mui/material";
+import { List, ListItem, ListItemIcon, ListItemText, Drawer, AppBar, Toolbar, Typography, IconButton, Card, CardContent } from "@mui/material";
 import { AddBox, Delete } from "@mui/icons-material";
 import "./Sidebar.css";
 
@@ -8,28 +8,70 @@ const drawerWidth = 240;
 const Sidebar = () => {
   const [services, setServices] = useState([
     {
-      name: "Service 1",
-      subservices: ["Subservice 1A", "Subservice 1B"]
+      name: "Compute Service",
+      subservices: [
+        { title: "Virtual Machine", description: `Name: VM1\n Region: India` },
+        { title: "Kubernetes engines", description: `Name: KE1\n Region: Russia` },
+        { title: "Kubernetes engines", description: `Name: KE1\n Region: Russia` },
+        { title: "Kubernetes engines", description: `Name: KE1\n Region: Russia` },
+        { title: "Kubernetes engines", description: `Name: KE1\n Region: Russia` },
+        { title: "Kubernetes engines", description: `Name: KE1\n Region: Russia` },
+      ]
     },
     {
-      name: "Service 2",
-      subservices: ["Subservice 2A", "Subservice 2B"]
+      name: "Networking",
+      subservices: [
+        { title: "VPC", description: "This is VPC" },
+        { title: "Subservice 2B", description: "This is Subservice 2B" },
+        { title: "Subservice 2B", description: "This is Subservice 2B" },
+        { title: "Subservice 2B", description: "This is Subservice 2B" },
+        { title: "Subservice 2B", description: "This is Subservice 2B" },
+        { title: "Subservice 2B", description: "This is Subservice 2B" },
+      ]
     },
     {
-      name: "Service 3",
-      subservices: ["Subservice 3A", "Subservice 3B"]
+      name: "Storage Services",
+      subservices: [
+        { title: "Object Storage", description: "This is Subservice 3A" },
+        { title: "File Storage", description: "This is Subservice 3B" },
+        { title: "File Storage", description: "This is Subservice 3B" },
+        { title: "File Storage", description: "This is Subservice 3B" },
+        { title: "File Storage", description: "This is Subservice 3B" },
+        { title: "File Storage", description: "This is Subservice 3B" },
+      ]
     },
     {
-      name: "Service 4",
-      subservices: ["Subservice 4A", "Subservice 4B"]
+      name: "Big Data",
+      subservices: [
+        { title: "Subservice 4A", description: "This is Subservice 4A" },
+        { title: "Subservice 4B", description: "This is Subservice 4B" },
+        { title: "Subservice 4B", description: "This is Subservice 4B" },
+        { title: "Subservice 4B", description: "This is Subservice 4B" },
+        { title: "Subservice 4B", description: "This is Subservice 4B" },
+        { title: "Subservice 4B", description: "This is Subservice 4B" },
+      ]
     },
     {
-      name: "Service 5",
-      subservices: ["Subservice 5A", "Subservice 5B"]
+      name: "Security and Identity Management",
+      subservices: [
+        { title: "Subservice 5A", description: "This is Subservice 5A" },
+        { title: "Subservice 5B", description: "This is Subservice 5B" },
+        { title: "Subservice 5B", description: "This is Subservice 5B" },
+        { title: "Subservice 5B", description: "This is Subservice 5B" },
+        { title: "Subservice 5B", description: "This is Subservice 5B" },
+        { title: "Subservice 5B", description: "This is Subservice 5B" },
+      ]
     },
     {
-      name: "Service 6",
-      subservices: ["Subservice 6A", "Subservice 6B"]
+      name: "Operations Tools",
+      subservices: [
+        { title: "Subservice 6A", description: "This is Subservice 6A" },
+        { title: "Subservice 6B", description: "This is Subservice 6B" },
+        { title: "Subservice 6B", description: "This is Subservice 6B" },
+        { title: "Subservice 6B", description: "This is Subservice 6B" },
+        { title: "Subservice 6B", description: "This is Subservice 6B" },
+        { title: "Subservice 6B", description: "This is Subservice 6B" },
+      ]
     }
   ]);
   const [selectedServiceIndex, setSelectedServiceIndex] = useState(0);
@@ -58,37 +100,46 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="sidebar">
-      <Drawer variant="permanent" className="drawer" classes={{ paper: "drawerPaper" }}>
-        <Toolbar />
-        <div className="drawerContainer">
-          <List>
-            {services.map((service, index) => (
-              <ListItem button key={index} onClick={() => handleServiceClick(index)} selected={selectedServiceIndex === index}>
-                <ListItemText primary={service.name} />
-              </ListItem>
+      <div className="sidebar">
+        <Drawer variant="permanent" className="drawer" classes={{ paper: "drawerPaper" }}>
+          <Toolbar />
+          <div className="drawerContainer">
+            <List>
+              {services.map((service, index) => (
+                  <ListItem button key={index} onClick={() => handleServiceClick(index)} selected={selectedServiceIndex === index}>
+                    <ListItemText primary={service.name} />
+                  </ListItem>
+              ))}
+            </List>
+          </div>
+          <div className="buttonContainer">
+            <IconButton color="primary" className="button" onClick={handleAddService}>
+              <AddBox />
+            </IconButton>
+            <IconButton
+                color="secondary"
+                className="button"
+                onClick={handleDeleteService}
+                disabled={services.length === 1}
+            >
+              <Delete />
+            </IconButton>
+          </div>
+        </Drawer>
+        <div className="content">
+          <div className="cardContainer">
+            {services[selectedServiceIndex].subservices.map((subservice, index) => (
+                <Card key={index} className="card">
+                  <CardContent>
+                    <Typography variant="h6">{subservice.title}</Typography>
+                    <br/>
+                    <Typography variant="body1" style={{ whiteSpace: "pre-line" }}>{subservice.description}</Typography>
+                  </CardContent>
+                </Card>
             ))}
-          </List>
+          </div>
         </div>
-        <div className="buttonContainer">
-          <IconButton color="primary" className="button" onClick={handleAddService}>
-            <AddBox />
-          </IconButton>
-          <IconButton color="primary" className="button" onClick={handleDeleteService}>
-            <Delete />
-          </IconButton>
-        </div>
-      </Drawer>
-      <div className="content">
-        <Typography variant="h6">{services[selectedServiceIndex].name}</Typography>
-        <ul>
-          {services[selectedServiceIndex].subservices.map((subservice, index) => (
-            <li key={index}>{subservice}</li>
-          ))}
-        </ul>
       </div>
-    </div>
   );
 };
-
 export default Sidebar;
