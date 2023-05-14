@@ -6,7 +6,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import hashedinlogo from './hashedinlogo.png';
 import './Header.css';
-import zIndex from '@mui/material/styles/zIndex';
 
 function Header() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,7 +15,7 @@ function Header() {
     // perform search or filtering logic here
   };
   return (
-    <AppBar>
+    <AppBar className='header'>
       <Toolbar>
       <div className="header-logo">
           <img src={hashedinlogo} alt="My Logo" />
