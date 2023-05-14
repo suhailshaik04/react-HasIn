@@ -1,13 +1,13 @@
 .message{
     display: block;
-    margin: 14rem auto auto;
+    margin: 15rem auto auto !important;
 }
 
 .cards{
-    margin-top: 37px;
+    margin-top: 37px !important;
 }
 
 .subservice-textfield{
-    padding: 0.5rem;
+    padding: 0.5rem !important;
     margin: auto;
 }

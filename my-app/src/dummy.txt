@@ -1,0 +1,143 @@
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import CssBaseline from '@mui/material/CssBaseline';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import SettingsIcon from '@mui/icons-material/Settings';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+
+import './Sidebar.css'
+import { TextField } from "@mui/material";
+import ServiceDetails from "../serviceDetails/serviceDetails";
+
+const drawerWidth = 240;
+
+function ClippedDrawer() {
+    const [open, setOpen] = React.useState(false);
+    const [listItems, setListItems] = React.useState([]);
+    const [selectedItem, setSelectedItem] = React.useState(null);
+    const [newItemName, setNewItemName] = React.useState('');
+    const [services, setServices] = React.useState([]);
+
+    React.useEffect(() => {
+        // Get services from backend and set to state
+        fetch('http://localhost:5000/services')
+            .then(response => response.json())
+            .then(data => setServices(data))
+            .catch(error => console.error(error));
+    }, []);
+
+    const handleListItemClick = (index) => {
+        setSelectedItem(index);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleSave = () => {
+        if (newItemName !== '') {
+            // Add new service to backend
+            fetch('http://localhost:5000/services', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: listItems.length + 1, name: newItemName })
+            })
+            .then(response => response.json())
+            .then(data => setServices([...services, data]))
+            .catch(error => console.error(error));
+
+            setListItems([...listItems, newItemName]);
+        }
+        setOpen(false);
+        setNewItemName('');
+    };
+
+    const handleDelete = () => {
+        // Remove service from backend
+        fetch(`http://localhost:5000/services/${services[selectedItem].id}`, {
+            method: 'DELETE'
+        })
+        .catch(error => console.error(error));
+
+        const newListItems = [...listItems];
+        newListItems.splice(selectedItem, 1);
+        setListItems(newListItems);
+        setSelectedItem(null);
+    };
+
+    return (
+        <Box className='Sidebar' sx={{ display: 'flex' }}>
+            <CssBaseline />
+            <Drawer
+                variant="permanent"
+                sx={{
+                    width: drawerWidth,
+                    flexShrink: 0,
+                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                }}
+            >
+                <Toolbar />
+                <Box sx={{ overflow: 'auto' }}>
+                    <List>
+                        {services.map((service, index) => (
+                            <ListItem key={service.id} disablePadding onClick={() => handleListItemClick(index)}>
+                                <ListItemButton>
+                                    <ListItemIcon>
+                                        <SettingsIcon />
+                                    </ListItemIcon>
+                                    <ListItemText primary={service.name} />
+                                    <ListItemIcon>
+                                        <DeleteIcon onClick={(event) => {
+                                            event.stopPropagation();
+                                            setSelectedItem(index);
+                                            handleDelete();
+                                        }} />
+										</ListItemButton>
+                            </ListItem>
+                        ))}
+                        <ListItem>
+                            <ListItemButton onClick={() => setOpen(true)}>
+                                <ListItemText primary="Add Service" />
+                            </ListItemButton>
+                        </ListItem>
+                    </List>
+                </Box>
+            </Drawer>
+            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+                <Toolbar />
+                {selectedItem !== null &&
+                    <ServiceDetails service={services[selectedItem]} />
+                }
+            </Box>
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Add New Service</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Service Name"
+                        fullWidth
+                        value={newItemName}
+                        onChange={(event) => setNewItemName(event.target.value)}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button onClick={handleSave}>Save</Button>
+                </DialogActions>
+            </Dialog>
+        </Box>
+    );
+}
+export default ClippedDrawer;
