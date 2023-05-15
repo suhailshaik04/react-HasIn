@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,18 +15,15 @@ import DialogActions from '@mui/material/DialogActions';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
-
-import './Sidebar.css'
-import { TextField } from "@mui/material";
+import TextField from '@mui/material/TextField';
 import ServiceDetails from "../serviceDetails/serviceDetails";
-
-const drawerWidth = 240;
+import './Sidebar.css'
 
 function ClippedDrawer() {
-    const [open, setOpen] = React.useState(false);
-    const [listItems, setListItems] = React.useState([]);
-    const [selectedItem, setSelectedItem] = React.useState(null);
-    const [newItemName, setNewItemName] = React.useState('');
+    const [open, setOpen] = useState(false);
+    const [listItems, setListItems] = useState([]);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [newItemName, setNewItemName] = useState('');
 
     const handleListItemClick = (index) => {
         setSelectedItem(index);
@@ -38,7 +35,11 @@ function ClippedDrawer() {
 
     const handleSave = () => {
         if (newItemName !== '') {
-            setListItems([...listItems, newItemName]);
+            const newService = {
+                name: newItemName,
+                subServices: []
+            };
+            setListItems([...listItems, newService]);
         }
         setOpen(false);
         setNewItemName('');
@@ -51,33 +52,42 @@ function ClippedDrawer() {
         setSelectedItem(null);
     };
 
+    const handleAddSubService = (name, description, id) => {
+        const updatedListItems = [...listItems];
+        const selectedService = updatedListItems[selectedItem];
+        selectedService.subServices.push({ name, description, id });
+        setListItems(updatedListItems);
+    };
+
     return (
-        <Box className='Sidebar' sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <Drawer
+                className = 'MuiDrawer-paper'
                 variant="permanent"
                 sx={{
-                    width: drawerWidth,
+                    width: 240,
                     flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
                 }}
             >
                 <Toolbar />
                 <Box sx={{ overflow: 'auto' }}>
                     <List>
-                        {listItems.map((text, index) => (
-                            <ListItem key={text} disablePadding onClick={() => handleListItemClick(index)}>
+                        {listItems.map((item, index) => (
+                            <ListItem key={item.name} disablePadding onClick={() => handleListItemClick(index)}>
                                 <ListItemButton>
                                     <ListItemIcon>
                                         <SettingsIcon />
                                     </ListItemIcon>
-                                    <ListItemText primary={text} />
+                                    <ListItemText primary={item.name} />
                                     <ListItemIcon>
-                                        <DeleteIcon onClick={(event) => {
-                                            event.stopPropagation();
-                                            setSelectedItem(index);
-                                            handleDelete();
-                                        }} />
+                                        <DeleteIcon
+                                            onClick={(event) => {
+                                                event.stopPropagation();
+                                                setSelectedItem(index);
+                                                handleDelete();
+                                            }}
+                                        />
                                     </ListItemIcon>
                                 </ListItemButton>
                             </ListItem>
@@ -106,11 +116,18 @@ function ClippedDrawer() {
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 {selectedItem !== null && (
                     <div>
-                        {selectedItem !== null && <ServiceDetails serviceName={listItems[selectedItem]} />}
+                        {selectedItem !== null && (
+                            <ServiceDetails
+                                serviceName={listItems[selectedItem].name}
+                                subServices={listItems[selectedItem].subServices}
+                                onAddSubService={handleAddSubService}
+                            />
+                        )}
                     </div>
                 )}
             </Box>
         </Box>
     );
 }
-export default ClippedDrawer
+
+export default ClippedDrawer;

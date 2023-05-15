@@ -10,13 +10,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import './subservice.css'
 
-function ServiceDetails({ serviceName }) {
-    const [subServices, setSubServices] = useState([]);
+function ServiceDetails({ serviceName, subServices, onAddSubService }) {
     const [open, setOpen] = useState(false);
 
-    const handleAddSubService = (name, description) => {
-        setSubServices([...subServices, { name, description }]);
-        setOpen(false);
+    const handleAddSubService = (name, description, id) => {
+        onAddSubService(name, description, id);
     };
 
     const handleClose = () => {
@@ -34,16 +32,20 @@ function ServiceDetails({ serviceName }) {
                 {subServices.length > 0 ? (
                     subServices.map(subService => (
                         <div className='cards'>
-                        <Card key={subService.name} sx={{ minWidth: 275, m: 2 }}>
-                            <CardContent>
-                                <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-                                    {subService.name}
-                                </Typography>
-                                <Typography variant="body2" component="p">
-                                    {subService.description}
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                            <Card key={subService.name} sx={{ minWidth: 275, m: 2 }}>
+                                <CardContent>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        {subService.name}
+                                    </Typography>
+                                    <Typography variant="body2" component="p">
+                                        {subService.description}
+                                    </Typography>
+                                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                                        {subService.id}
+                                    </Typography>
+
+                                </CardContent>
+                            </Card>
                         </div>
                     ))
                 ) : (
@@ -63,4 +65,5 @@ function ServiceDetails({ serviceName }) {
         </div>
     );
 }
+
 export default ServiceDetails;

@@ -6,13 +6,15 @@ import './subservice.css'
 function AddSubServiceForm({ open, handleClose, onAddSubService }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const [id, setId] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onAddSubService(name, description);
+        onAddSubService(name, description, id);
         handleClose();
         setName("");
         setDescription("");
+        setId("");
     };
 
     return (
@@ -22,6 +24,7 @@ function AddSubServiceForm({ open, handleClose, onAddSubService }) {
                 <form onSubmit={handleSubmit}>
                     <TextField className='subservice-textfield' label="Name" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
                     <TextField label="Description" fullWidth value={description} onChange={(e) => setDescription(e.target.value)} />
+                    <TextField label="Id" fullWidth value={id} onChange={(e) => setId(e.target.value)} />
                 </form>
             </DialogContent>
             <DialogActions>

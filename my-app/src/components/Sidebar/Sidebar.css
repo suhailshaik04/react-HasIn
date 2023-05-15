@@ -1,7 +1,13 @@
 .Sidebar{
   position: relative;
-  z-index: 1;
+  z-index: 1 !important;
 }
 .add-service-button{
   color: white !important;
+}
+
+.MuiDrawer-paper{
+  width: 240px;
+  boxSizing: 'border-box';
+  z-index: 1 !important;
 }
